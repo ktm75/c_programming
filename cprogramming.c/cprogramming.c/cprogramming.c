@@ -1,4 +1,4 @@
-//3-2 이동까지 했습니다. 
+//2 - 3 이동까지 했습니다. 
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
