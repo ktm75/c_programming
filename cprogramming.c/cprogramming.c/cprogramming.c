@@ -1,86 +1,100 @@
+//2-2 ë§ˆë™ì„ ì²´ë ¥ì¶”ê°€ê¹Œì§€ í–ˆìŠµë‹ˆë‹¤.
 #include <stdio.h>
 #include <stdbool.h>
-#include <Windows.h>
 #include <stdlib.h>
 
-#define LEN_MIN 15
+// íŒŒë¼ë¯¸í„°
+#define LEN_MIN 15 // ê¸°ì°¨ ê¸¸ì´
 #define LEN_MAX 50
-#define PROB_MIN 10
+#define STM_MIN 0 // ë§ˆë™ì„ ì²´ë ¥
+#define STM_MAX 5
+#define PROB_MIN 10 // í™•ë¥ 
 #define PROB_MAX 90
+#define AGGRO_MIN 0 // ì–´ê·¸ë¡œ ë²”ìœ„
+#define AGGRO_MAX 5
+// ë§ˆë™ì„ ì´ë™ ë°©í–¥
+#define MOVE_LEFT 1
+#define MOVE_STAY 0
+// ì¢€ë¹„ì˜ ê³µê²© ëŒ€ìƒ
+#define ATK_NONE 0
+#define ATK_CITIZEN 1
+#define ATK_DONGSEOK 2
+// ë§ˆë™ì„ í–‰ë™
+#define ACTION_REST 0
+#define ACTION_PROVOKE 1
+#define ACTION_PULL 2
+
+
+//ì—´ì°¨ ì´ˆê¸° ìƒíƒœ ì¶œë ¥
+int train_len, per_prob, citizen_position, zombie_position, madongseok_position, randnum, turn_count = 0;
+int madongseok_stamina, madongseok_aggro = 1, citizen_aggro = 1;
+char train[LEN_MAX];
 
 
 
+
+
+
+
+
+
+//ì—´ì°¨ ì´ˆê¸° ìƒíƒœ ì¶œë ¥
+void printcover() {
+	for (int i = 0; i < train_len; i++) {
+		train[i] = '#';
+		printf("%c", train[i]);
+	}
+	printf("\n");
+}
+
+void printTrain() {
+	printcover();
+	for (int i = 0; i < train_len; i++) {
+		train[i] = ' ';
+		train[citizen_position] = 'C';
+		train[zombie_position] = 'Z';
+		train[madongseok_position] = 'M';
+		train[0] = train[train_len - 1] = '#';
+		printf("%c", train[i]);
+	}
+	printf("\n");
+	printcover();
+	printf("\n");
+}
+//ê²Œì„ ì‹œì‘ 
 int main(void) {
-	//ÀÎÆ®·Î ¾Æ½ºÅ°¾ÆÆ®
+	//ì¸íŠ¸ë¡œ ì•„ìŠ¤í‚¤ì•„íŠ¸
 	printf(" *********  ********  ****      ****  *********  *********** **********\n");
 	printf("      ***  ***    *** ******  ******  ***    ***     ***     ***\n");
 	printf("     ***   ***    *** ***   **   ***  **********     ***     **********\n");
 	printf("    ***    ***    *** ***        ***  ***    ***     ***     ***\n");
 	printf("   ***     ***    *** ***        ***  ***    ***     ***     ***\n");
 	printf(" *********  ********  ***        ***  *********  *********** **********\n");
-
-	Sleep(2000);
-	//¿­Â÷ ÃÊ±â »óÅÂ Ãâ·Â
-	int train_len, per_prob, citizen_position, zombie_position, madongsuk_position, randnum, turn_count = 0;
-	printf("train length(15~50)>>");
+	printf("train length(15~50)>> ");
 	scanf_s("%d", &train_len);
-	if (train_len < LEN_MIN || train_len > LEN_MAX)
-	{
-		exit(0);
+	while (train_len < LEN_MIN || train_len > LEN_MAX) {
+		printf("train length(15~50)>> ");
+		scanf_s("%d", &train_len);
 	}
-	printf("percentile probability 'p'(10~90)>>");
+	printf("madongseok stamina(0~5)>> ");
+	scanf_s("%d", &madongseok_stamina);
+	while (madongseok_stamina <= STM_MIN || madongseok_stamina > STM_MAX) {
+		printf("madongseok stamina(0~5)>> ");
+		scanf_s("%d", &madongseok_stamina);
+	}
+	printf("percentile probability 'p'(10~90)>> ");
 	scanf_s("%d", &per_prob);
-	if (per_prob < PROB_MIN || per_prob > 90)
-	{
-		exit(0);
-	}
-	else
-	{
-		for (int i = 0; i <= train_len - 1; i++)
-		{
-			printf("#");
-		}
+	while (per_prob < PROB_MIN || per_prob > PROB_MAX) {
+		printf("percentile probability 'p'(10~90)>> ");
+		scanf_s("%d", &per_prob);
 	}
 	printf("\n");
 	citizen_position = train_len - 6;
 	zombie_position = train_len - 3;
-	madongsuk_position = train_len - 2;
-	for (int i = 0; i <= (train_len - 1); i++)
-	{
-		if (i == citizen_position)
-		{
-			printf("C");
-		}
-		else if (i == zombie_position)
-		{
-			printf("Z");
-		}
-		else if (i == madongsuk_position)
-		{
-			printf("M");
-		}
-		else if (i == 0)
-		{
-			printf("#");
-		}
-		else if (i == train_len - 1)
-		{
-			printf("#");
-		}
-		else { printf(" "); }
-	}
-	printf("\n");
-	for (int i = 0; i <= train_len - 1; i++)
-	{
-		printf("#");
-	}
-	printf("\n");
-	printf("\n");
-	printf("\n");
-	printf("\n");
-
+	madongseok_position = train_len - 2;
+	printTrain();
 	while (1) {
-		//½Ã¹Î ÀÌµ¿
+		//ì‹œë¯¼ ì´ë™
 		randnum = rand() % 100;
 		if (randnum < 100 - per_prob)
 		{
@@ -90,7 +104,7 @@ int main(void) {
 
 
 
-		//Á»ºñ ÀÌµ¿
+		//ì¢€ë¹„ ì´ë™
 		turn_count++;
 		if (turn_count % 2 != 0)
 		{
@@ -101,85 +115,18 @@ int main(void) {
 		}
 		else { zombie_position = train_len - (train_len - zombie_position); }
 
-		// °ÔÀÓ Á¾·á(½ÇÆĞ), ¾Æ¿ôÆ®·Î
+		// ê²Œì„ ì¢…ë£Œ(ì‹¤íŒ¨), ì•„ì›ƒíŠ¸ë¡œ
 		if (zombie_position == citizen_position + 1)
 		{
-			for (int i = 0; i <= train_len - 1; i++)
-			{
-				printf("#");
-			}
-			printf("\n");
-			for (int i = 0; i <= (train_len - 1); i++)
-			{
-				if (i == citizen_position)
-				{
-					printf("C");
-				}
-				else if (i == zombie_position)
-				{
-					printf("Z");
-				}
-				else if (i == madongsuk_position)
-				{
-					printf("M");
-				}
-				else if (i == 0)
-				{
-					printf("#");
-				}
-				else if (i == train_len - 1)
-				{
-					printf("#");
-				}
-				else { printf(" "); }
-			}
-			printf("\n");
-			for (int i = 0; i <= train_len - 1; i++)
-			{
-				printf("#");
-			}
+			printTrain();
 			printf("\n");
 			printf("GAME OVER!\n");
 			printf("Citizen(s) has(have) been attacked by a zombie\n");
 			exit(0);
 		}
-		// °ÔÀÓÁ¾·á(¼º°ø), ¾Æ¿ôÆ®·Î 
-		if (citizen_position == 1)
-		{
-			for (int i = 0; i <= train_len - 1; i++)
-			{
-				printf("#");
-			}
-			printf("\n");
-			for (int i = 0; i <= (train_len - 1); i++)
-			{
-				if (i == citizen_position)
-				{
-					printf("C");
-				}
-				else if (i == zombie_position)
-				{
-					printf("Z");
-				}
-				else if (i == madongsuk_position)
-				{
-					printf("M");
-				}
-				else if (i == 0)
-				{
-					printf("#");
-				}
-				else if (i == train_len - 1)
-				{
-					printf("#");
-				}
-				else { printf(" "); }
-			}
-			printf("\n");
-			for (int i = 0; i <= train_len - 1; i++)
-			{
-				printf("#");
-			}
+		// ê²Œì„ì¢…ë£Œ(ì„±ê³µ), ì•„ì›ƒíŠ¸ë¡œ 
+		if (citizen_position == 1) {
+			printTrain();
 			printf("\n");
 			printf("Game Succes!\n");
 			printf("Citizen(s) escape(s) from the zombie");
@@ -188,65 +135,23 @@ int main(void) {
 
 
 
-		//¿­Â÷ »óÅÂ Ãâ·Â
-		for (int i = 0; i <= train_len - 1; i++)
-		{
-			printf("#");
-		}
-		printf("\n");
-		for (int i = 0; i <= (train_len - 1); i++)
-		{
-			if (i == citizen_position)
-			{
-				printf("C");
-			}
-			else if (i == zombie_position)
-			{
-				printf("Z");
-			}
-			else if (i == madongsuk_position)
-			{
-				printf("M");
-			}
-			else if (i == 0)
-			{
-				printf("#");
-			}
-			else if (i == train_len - 1)
-			{
-				printf("#");
-			}
-			else { printf(" "); }
-		}
-		printf("\n");
-		for (int i = 0; i <= train_len - 1; i++)
-		{
-			printf("#");
-		}
-		printf("\n");
-		//½Ã¹Î, Á»ºñ »óÅÂ Ãâ·Â
-		if (randnum < 100 - per_prob)
-		{
+		//ì—´ì°¨ ìƒíƒœ ì¶œë ¥
+		printTrain();
+		//ì‹œë¯¼, ì¢€ë¹„ ìƒíƒœ ì¶œë ¥
+		if (randnum < 100 - per_prob) {
 			printf("citizen: %d -> %d\n", citizen_position + 1, citizen_position);
 		}
 		else { printf("citizen : stay %d\n", citizen_position); }
 
-		if (turn_count % 2 != 0)
-		{
-			if (randnum < per_prob)
-			{
+		if (turn_count % 2 != 0) {
+			if (randnum < per_prob) {
 				printf("zombie: %d -> %d \n", zombie_position + 1, zombie_position);
 			}
 			else { printf("zombie: stay %d\n", zombie_position); }
 		}
-		if (turn_count % 2 != 1)
-		{
+		else if (turn_count % 2 != 1) {
 			printf("zombie: stay %d (cannot move)\n", zombie_position);
 		}
-
-
-
-		Sleep(4000);
 		printf("\n");
 	}
 	return 0;
